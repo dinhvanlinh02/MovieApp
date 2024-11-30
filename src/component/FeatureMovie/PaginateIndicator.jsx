@@ -4,11 +4,11 @@ const PaginateIndicator = ({ movies, activeMovieId, setactiveMovieId }) => {
   useEffect(() => {
     const autoSwitch = setInterval(() => {
       const currentIndex = movies.findIndex((movie) => movie.id === activeMovieId);
-      const nextIndex = (currentIndex + 1) % movies.length; // Tự quay vòng
-      setactiveMovieId(movies[nextIndex].id); // Cập nhật trang tiếp theo
+      const nextIndex = (currentIndex + 1) % movies.length; 
+      setactiveMovieId(movies[nextIndex].id); 
     }, 4000); // 4 giây
 
-    return () => clearInterval(autoSwitch); // Xóa khi không dùng nữa
+    return () => clearInterval(autoSwitch); 
   }, [movies, activeMovieId, setactiveMovieId]);
 
   return (
@@ -17,7 +17,7 @@ const PaginateIndicator = ({ movies, activeMovieId, setactiveMovieId }) => {
         {movies.map((movie) => (
           <li
             key={movie.id}
-            onClick={() => setactiveMovieId(movie.id)} // Chọn thủ công
+            onClick={() => setactiveMovieId(movie.id)} 
             className={`h-1 w-6 cursor-pointer ${
               movie.id === activeMovieId ? "bg-slate-100" : "bg-slate-600"
             }`}
