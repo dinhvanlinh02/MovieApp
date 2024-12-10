@@ -1,5 +1,5 @@
 
-const CircularProgresBar = ({percent =0,size = 50,strokeWith=5,strokeColor ='green'}) => {
+const CircularProgresBar = ({percent =90,size = 50,strokeWith=5,strokeColor ='green'}) => {
   const radius = size/2 -strokeWith;
   return (
     <div>

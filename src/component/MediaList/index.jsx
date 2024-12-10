@@ -1,5 +1,5 @@
+import MovieCard from "@component/MovieCard";
 import { useEffect, useState } from "react";
-import MovieCard from "./MovieCard";
 
 
 
@@ -50,6 +50,7 @@ const MediaList = ({title,tabs}) => {
         {mediaList.length > 0 ? (
           mediaList.map((media) => (
             <MovieCard
+            id={media.id}
               key={media.id || media.name}
               title={media.title || media.name}
               releaseDate={media.release_date || media.first_air_date}
