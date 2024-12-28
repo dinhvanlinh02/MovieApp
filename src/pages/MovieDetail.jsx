@@ -5,33 +5,23 @@ import Banner from "@component/MeadiDetail/Banner";
 import ActorList from "@component/MeadiDetail/ActorList";
 import RelatedMediaList from "@component/MeadiDetail/RelatedMediaList";
 import MoviewInfomation from "@component/MeadiDetail/MoviewInfomation";
+import useFetch from "@hooks/useFetch";
 
 const MovieDetail = () => {
   const { id } = useParams();
-  const [movieInfo, setMovieInfo] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
+  // const [movieInfo, setMovieInfo] = useState({});
+  // const [isLoading, setIsLoading] = useState(false);
   const [isRelatedMovieListLoading, setIsRelatedMovieListLoading] = useState(false); // Thêm dòng này
   const [relatedMovies, setRelatedMovies] = useState([]);
 
   // Fetch Movie Details
-  useEffect(() => {
-    setIsLoading(true);
-    fetch(`https://api.themoviedb.org/3/movie/${id}?append_to_response=release_dates,credits`, {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkZTdmMzliNGJjODVjZmJjYWU2NjQxY2ExMDBiZTI1YiIsIm5iZiI6MTczMjYwNDI2OC4yMjIwMDAxLCJzdWIiOiI2NzQ1NzE2Y2Q0MDE0YzJkYjc3MGMwNmUiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.WQLz08k7Pne5YxYcBkXOEhMcwoPDB-aHTLolZY-szLM",
-      },
-    })
-      .then(async (res) => {
-        const data = await res.json();
-        console.log("Movie Info:", data);
-        setMovieInfo(data);
-      })
-      .catch((err) => console.error(err))
-      .finally(() => setIsLoading(false));
-  }, [id]);
+  const {data:movieInfo,isLoading} = useFetch(
+    {
+      url:`/movie/${id}?append_to_response=release_dates,credits`,
+      
+    }
+  )
+
 
   // Fetch Related Movies
   useEffect(() => {

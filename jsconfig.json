@@ -5,6 +5,8 @@
     "@component/*":["src/component/*"],
     "@libs/*":["src/libs/*"],
     "@pages/*":["src/pages*"],
+    "@hooks/*":["src/hooks*"],
+
 
 }
     }
