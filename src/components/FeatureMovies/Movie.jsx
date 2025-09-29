@@ -1,34 +1,30 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay } from "@fortawesome/free-solid-svg-icons";
-const Movie = () => {
+const Movie = ({ data }) => {
+  console.log(data);
+  if (!data) return null;
+
+  const { backdrop_path, title, release_date, overview } = data;
+
   return (
     <div>
       {" "}
       <img
-        src="https://image.tmdb.org/t/p/original/1RgPyOhN4DRs225BGTlHJqCudII.jpg"
-        className="aspect-video brightness-50"
+        src={`https://image.tmdb.org/t/p/original${backdrop_path}`}
+        className="aspect-video brightness-50 w-full"
       />
       <div className="absolute bottom-[10%] left-8 w-1/2 sm:w-1/3">
-        <p className="font-bold sm:text-[2vw] mb-2">Inside out 2</p>
+        <p className="font-bold sm:text-[2vw] mb-2">{title}</p>
         <div>
           <p className="text-gray-400 border border-gray-400 inline-block p-1 mb-1">
             PG13
           </p>
-          <p className="text-[1.2vw]">2024-06-11</p>
+          <p className="text-[1.2vw]">{release_date}</p>
         </div>
         <div>
           <div className="hidden sm:block text-[1.2vw]">
             <p className="font-bold mb-2">Overview</p>
-            <p>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-              Aspernatur quam, voluptatibus atque quisquam nisi sint quas dicta
-              fugiat fugit maxime dolore, doloribus sunt pariatur? Vero
-              repudiandae veniam iure culpa beatae. Lorem ipsum, dolor sit amet
-              consectetur adipisicing elit. Aspernatur quam, voluptatibus atque
-              quisquam nisi sint quas dicta fugiat fugit maxime dolore,
-              doloribus sunt pariatur? Vero repudiandae veniam iure culpa
-              beatae.
-            </p>
+            <p>{overview}</p>
           </div>
           <div className="mt-4">
             <button className="bg-white text-black py-2 px-4 rounded text-10 lg:text-lg mr-2">
