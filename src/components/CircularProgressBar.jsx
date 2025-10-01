@@ -55,7 +55,7 @@ const CircularProgressBar = ({
           alignmentBaseline="middle"
           textAnchor="middle"
         >
-          {percen}%
+          {percen}
         </text>
       </svg>
     </div>

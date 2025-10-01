@@ -1,35 +1,26 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import MovieCard from "@components/MovieCard";
+import useFetch from "@/hooks/useFetch"; // ✅ import custom hook
 
 const MediaList = ({ title, tabs }) => {
-  const [MediaList, setMediaList] = useState([]);
-  const [activetabId, setactivetabId] = useState(tabs[0]?.id);
+  const [activeTabId, setActiveTabId] = useState(tabs[0]?.id || null);
+  const [mediaList, setMediaList] = useState([]);
 
-  const fetchMediaList = useCallback(async () => {
-    try {
-      const url = tabs.find((tab) => tab.id === activetabId)?.url;
-      if (url) {
-        const response = await fetch(url, {
-          method: "GET",
-          headers: {
-            accept: "application/json",
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkZTdmMzliNGJjODVjZmJjYWU2NjQxY2ExMDBiZTI1YiIsIm5iZiI6MTczMjYwNDI2OC4yMjIwMDAxLCJzdWIiOiI2NzQ1NzE2Y2Q0MDE0YzJkYjc3MGMwNmUiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.WQLz08k7Pne5YxYcBkXOEhMcwoPDB-aHTLolZY-szLM`,
-          },
-        });
+  // lấy url theo tab hiện tại
+  const activeUrl = tabs.find((tab) => tab.id === activeTabId)?.url;
 
-        const jsonResponse = await response.json();
-        console.log(jsonResponse);
-        const trendingMediaList = jsonResponse.results.slice(0, 12);
-        setMediaList(trendingMediaList);
-      }
-    } catch (error) {
-      console.error("Error fetching movies:", error);
-    }
-  }, [activetabId, tabs]);
+  // gọi API bằng hook
+  const { data, isLoading, error } = useFetch({
+    url: activeUrl || "",
+  });
 
+  // xử lý khi có data mới
   useEffect(() => {
-    fetchMediaList();
-  }, [fetchMediaList]);
+    if (data?.results) {
+      const trendingMediaList = data.results.slice(0, 12);
+      setMediaList(trendingMediaList);
+    }
+  }, [data]);
 
   return (
     <div className="px-8 text-[1.2vw] py-10 bg-black text-white">
@@ -40,17 +31,31 @@ const MediaList = ({ title, tabs }) => {
             <li
               key={tab.id}
               className={`px-2 py-1 rounded cursor-pointer ${
-                activetabId === tab.id ? "bg-white text-black" : ""
+                activeTabId === tab.id ? "bg-white text-black" : ""
               }`}
-              onClick={() => setactivetabId(tab.id)}
+              onClick={() => setActiveTabId(tab.id)}
             >
               {tab.name}
             </li>
           ))}
         </ul>
       </div>
+
+      {isLoading && (
+        <div className="text-center py-6">
+          <div className="w-8 h-8 mx-auto border-4 border-gray-600 border-t-white rounded-full animate-spin"></div>
+          <p className="mt-2">Loading...</p>
+        </div>
+      )}
+
+      {error && (
+        <div className="text-center text-red-500 py-6">
+          <p>Error: {error}</p>
+        </div>
+      )}
+
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
-        {MediaList.map((media) => (
+        {mediaList.map((media) => (
           <MovieCard
             id={media.id}
             key={media.id}

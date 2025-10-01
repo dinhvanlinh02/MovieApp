@@ -1,45 +1,53 @@
-import { useCallback, useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import Movie from "./Movie";
 import PaginateIndicator from "./PaginateIndicator";
+import useFetch from "@/hooks/useFetch"; // ✅ import custom hook
 
 const FeatureMovies = () => {
-  const [Movies, setMovies] = useState([]);
+  const { data, isLoading, error } = useFetch({
+    url: "/movie/popular", // API endpoint
+  });
+
+  const [movies, setMovies] = useState([]);
   const [activeMovieId, setActiveMovieId] = useState(null);
 
-  const fetchMovies = useCallback(async () => {
-    try {
-      const response = await fetch(
-        `https://api.themoviedb.org/3/movie/popular`,
-        {
-          method: "GET",
-          headers: {
-            accept: "application/json",
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkZTdmMzliNGJjODVjZmJjYWU2NjQxY2ExMDBiZTI1YiIsIm5iZiI6MTczMjYwNDI2OC4yMjIwMDAxLCJzdWIiOiI2NzQ1NzE2Y2Q0MDE0YzJkYjc3MGMwNmUiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.WQLz08k7Pne5YxYcBkXOEhMcwoPDB-aHTLolZY-szLM`,
-          },
-        }
-      );
-
-      const jsonResponse = await response.json();
-      const popularMovies = jsonResponse.results.slice(0, 4);
-      setMovies(popularMovies);
-      setActiveMovieId(popularMovies[0].id);
-    } catch (error) {
-      console.error("Error fetching movies:", error);
-    }
-  }, []);
-
   useEffect(() => {
-    fetchMovies();
-  }, [fetchMovies]);
+    if (data?.results) {
+      const popularMovies = data.results.slice(0, 4); // lấy 4 phim đầu
+      setMovies(popularMovies);
+      if (popularMovies.length > 0) {
+        setActiveMovieId(popularMovies[0].id);
+      }
+    }
+  }, [data]);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-64 text-white">
+        <div className="w-8 h-8 border-4 border-gray-600 border-t-white rounded-full animate-spin"></div>
+        <p className="ml-3">Loading movies...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-64 text-red-500">
+        <p>Error: {error}</p>
+      </div>
+    );
+  }
 
   return (
     <div>
       <div className="relative text-white">
-        {Movies.filter((movie) => movie.id === activeMovieId).map((movie) => (
-          <Movie key={movie.id} data={movie} />
-        ))}
+        {movies
+          .filter((movie) => movie.id === activeMovieId)
+          .map((movie) => (
+            <Movie key={movie.id} data={movie} />
+          ))}
         <PaginateIndicator
-          Movies={Movies}
+          movies={movies}
           activeMovieId={activeMovieId}
           setActiveMovieId={setActiveMovieId}
         />
